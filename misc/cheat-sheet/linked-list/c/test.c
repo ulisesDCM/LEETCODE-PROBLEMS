@@ -1,0 +1,188 @@
+/* 
+    707. Design Linked List - Medium
+
+    Design your implementation of the linked list. You can choose to use a singly or doubly linked 
+    list.
+    A node in a singly linked list should have two attributes: val and next. val is the value of 
+    the current node, and next is a pointer/reference to the next node.
+    If you want to use the doubly linked list, you will need one more attribute prev to indicate 
+    the previous node in the linked list. Assume all nodes in the linked list are 0-indexed.
+    Implement the MyLinkedList class:
+        MyLinkedList() Initializes the MyLinkedList object.
+        
+        int get(int index) Get the value of the indexth node in the linked list. If the index 
+        is invalid, return -1.
+        
+        void addAtHead(int val) Add a node of value val before the first element of the linked list. 
+        After the insertion, the new node will be the first node of the linked list.
+        
+        void addAtTail(int val) Append a node of value val as the last element of the linked list.
+
+        void addAtIndex(int index, int val) Add a node of value val before the indexth node in the 
+        linked list. If index equals the length of the linked list, the node will be appended to 
+        the end of the linked list. If index is greater than the length, the node will not 
+        be inserted.
+        
+        void deleteAtIndex(int index) Delete the indexth node in the linked list, 
+        if the index is valid.
+
+    Example 1:
+        Input
+        ["MyLinkedList", "addAtHead", "addAtTail", "addAtIndex", "get", "deleteAtIndex", "get"]
+        [[], [1], [3], [1, 2], [1], [1], [1]]
+        Output
+        [null, null, null, null, 2, null, 3]
+
+        Explanation
+        MyLinkedList myLinkedList = new MyLinkedList();
+        myLinkedList.addAtHead(1);
+        myLinkedList.addAtTail(3);
+        myLinkedList.addAtIndex(1, 2);    // linked list becomes 1->2->3
+        myLinkedList.get(1);              // return 2
+        myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
+        myLinkedList.get(1);              // return 3
+
+    Constraints:
+        0 <= index, val <= 1000
+        Please do not use the built-in LinkedList library.
+        At most 2000 calls will be made to get, addAtHead, addAtTail, addAtIndex and deleteAtIndex.
+
+    Your MyLinkedList struct will be instantiated and called as such:
+    MyLinkedList* obj = myLinkedListCreate();
+    int param_1 = myLinkedListGet(obj, index);
+    myLinkedListAddAtHead(obj, val);
+    myLinkedListAddAtTail(obj, val);
+    myLinkedListAddAtIndex(obj, index, val); 
+    myLinkedListDeleteAtIndex(obj, index);
+    myLinkedListFree(obj);
+
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int val;
+    struct node *next;
+}node;
+
+typedef struct {
+    node *head;
+} MyLinkedList;
+
+node *createNode(int val){
+    node *ret = malloc( sizeof(node) );
+    ret->next = NULL;
+    ret->val = val;
+    return ret;
+}
+
+MyLinkedList* myLinkedListCreate() {
+    MyLinkedList *ret = malloc( sizeof(MyLinkedList) );
+    ret->head = NULL;
+    return ret;
+
+}
+
+int myLinkedListGet(MyLinkedList* obj, int index) {
+    node *tmp = obj->head;
+    
+    while( (tmp != NULL) && (index)){
+        tmp = (node *) tmp->next;
+        index--;
+    }
+
+    return (tmp == NULL) ? -1 : tmp->val;
+}
+
+void myLinkedListAddAtHead(MyLinkedList* obj, int val) {
+    node *new  = createNode(val);
+    new->next = obj->head;
+    obj->head = new;  
+}
+
+void myLinkedListAddAtTail(MyLinkedList* obj, int val) {
+    node *curr = obj->head;
+    node *prev = NULL;
+    node *new = createNode(val);
+
+    while( (curr != NULL) ){
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if(prev == NULL){
+        obj->head = new;
+    }else{
+        prev->next = new;
+    }
+}
+
+void myLinkedListAddAtIndex(MyLinkedList* obj, int index, int val) {
+    node *curr = obj->head;
+    node *prev = NULL;
+
+    while( (curr != NULL) && (index) ){
+        prev = curr;
+        curr = curr->next;
+        index--;
+    }
+
+    if(index == 0){
+        node *new = createNode( val );
+        if( prev == NULL ){
+            new->next  = obj->head;
+            obj->head = new;
+        }else{
+            prev->next = new;
+            new->next = curr;
+        }
+    }
+}
+
+void myLinkedListDeleteAtIndex(MyLinkedList* obj, int index) {
+    node *curr = obj->head;
+    node *prev = NULL;
+
+    while( (curr != NULL) && (index)){
+        prev = curr;
+        curr = curr->next;
+        index--;
+    }
+
+    if( index == 0 ){
+        if( prev == NULL ){
+            if(obj->head != NULL){
+                obj->head = obj->head->next;
+            }
+        }else{
+            if( curr != NULL)
+                prev->next = curr->next;
+            else
+                prev->next = NULL;
+        }
+    }   
+}
+
+void myLinkedListFree(MyLinkedList* obj) {
+    
+}
+
+/**
+ * Your MyLinkedList struct will be instantiated and called as such:
+ * MyLinkedList* obj = myLinkedListCreate();
+ * int param_1 = myLinkedListGet(obj, index);
+ 
+ * myLinkedListAddAtHead(obj, val);
+ 
+ * myLinkedListAddAtTail(obj, val);
+ 
+ * myLinkedListAddAtIndex(obj, index, val);
+ 
+ * myLinkedListDeleteAtIndex(obj, index);
+ 
+ * myLinkedListFree(obj);
+*/
+int main(void){
+    return 1;
+}
